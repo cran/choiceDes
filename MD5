@@ -1,0 +1,15 @@
+a7ee5b335dfd1106a3f465c727982fb3 *DESCRIPTION
+4443332d1af93244c64eee649d02da1f *NAMESPACE
+20d3c31f44f65ae9e21d25b27ac153dd *R/dcm.design.R
+6097c11899672d2da48790166d082cea *R/tradeoff.des.R
+1c8980cb9e237dd3b2f8475049849325 *man/choiceDes-package.Rd
+6e68e9bc4f2109f0a3d88c45bcbadf1d *man/cp.scree.Rd
+1877e9fc63eb5196c030b320e6f1e75b *man/dcm.design.Rd
+388b1cf39cfd86a3840b9fed3c34d8c3 *man/dcm.design.cand.Rd
+941a01384262009d89baa4b0e9d855d2 *man/dcm.design.effcy.Rd
+ad837c6526ccaca398d75603e6c52c1a *man/dcm.design.gencand.Rd
+b4e96d6de9fa764e11758d3cdaf9fd8d *man/dcm.design.sort.Rd
+b8981afb63840da117bb1a751beec999 *man/get.file.Rd
+ded0055941aae98ab97a67a98bb6114e *man/pw.eval.Rd
+c6738654c7073fb825dd1ae6e4a13adb *man/tradeoff.des.Rd
+124775b8f304554ee26e2e5352713357 *man/write.tab.Rd
