@@ -1,16 +1,16 @@
 
 ##Algorithms for producing MaxDiff and other tradeoff designs
-##For use in choiceDes_0.9-0
-##Written for [R]-language (tested/built on version 3.1.2)
+##For use in choiceDes_0.9-3
+##Written for [R]-language (tested/built on version 3.5.0)
 ##Requires: base, stat, AlgDesign
-##Revised 2014-11-24
+##Revised 2018-06-15
 
 tradeoff.des <- function(items, shown, vers, tasks, fname=NULL, Rd=20, Rc=NULL, print=TRUE) {
 
 	## Initialise
 	ta <- Sys.time()
 	if(print) {
-		cat("tradeoff.des 0.9-0, ", date(), "\n")
+		cat("tradeoff.des 0.9-2, ", date(), "\n")
 		flush.console()
 	}
 
@@ -18,7 +18,12 @@ tradeoff.des <- function(items, shown, vers, tasks, fname=NULL, Rd=20, Rc=NULL, 
 	if(is.null(Rc)) { Rc <- max(1000, 10 * drows) }
 
 	## Find optimal design
-	des.c <- optBlock(~., factor(1:items), rep(shown, drows), nRepeats=Rd)
+	des.c <- tryCatch(
+		optBlockC(factor(1:items), rep(shown, drows), nRepeats=Rd),
+			error=function(e) return(NULL)
+		)
+	if(is.null(des.c)) { stop("PROCEDURE STOPPED: Insufficient design space") }
+	
 	des.m <- t(matrix(des.c$rows, shown, drows))
 	
 	## Optimize positional balance
@@ -37,7 +42,7 @@ tradeoff.des <- function(items, shown, vers, tasks, fname=NULL, Rd=20, Rc=NULL, 
 		des.try <- des.p
 		des.try[ii,] <- sample(des.try[ii,], shown)
 			
-		da <- as.vector(unlist(apply(des.try, 2, table)))
+		da <- as.vector(unlist(apply(des.try, 2, function(x) table(factor(x, levels=1:items)))))
 		if(length(da) == items * shown) {
 			crit.try <- abs(sqrt(items * shown) - sum(svd(da)$u))
 			if(crit.try < crit) {
@@ -53,27 +58,33 @@ tradeoff.des <- function(items, shown, vers, tasks, fname=NULL, Rd=20, Rc=NULL, 
 			cc <- cc + 1
 			if(crit.vec[i] < crit.vec[i-1]) { cc <- 0 }
 		}
-		
 	}
 	
 	## Block reordered design into versions
-	#blocking a design with fewer than 4 versions is inefficient
-	#and will sometimes lead to errors
-	if(vers < 4) { des.x <- des.p }
+	des.d <- as.data.frame(des.p)
+	for(g in 1:shown) { des.d[,g] <- as.factor(des.d[,g]) }
 	
-	else {
-		des.d <- as.data.frame(des.p)
-		for(g in 1:shown) { des.d[,g] <- as.factor(des.d[,g]) }
-		des.f <- optBlock(~., des.d, rep(tasks, vers), nRepeats=Rd)
-		des.x <- des.p[des.f$rows,]
-	}
+	#error-check block to versions
+	des.f <- tryCatch(
+		optBlockC(des.d, rep(tasks, vers), nRepeats=Rd), 
+			error=function(e) return(NULL), 
+			warning=function(e) return(NULL)
+		)
+	
+	if(is.null(des.f)) {
+		des.x <- des.p
+		warning("Insufficient design space to block into versions; using random assignment instead", 
+			call.=FALSE, immediate.=TRUE
+		)		
+	} else { des.x <- des.p[des.f$rows,] }
+	
 	
 	## Calculate one-way and positional balance
-	bal.1w <- table(des.x)
+	bal.1w <- table(factor(des.x, levels=1:items))
 	bal.1w.mn <- mean(bal.1w)
 	bal.1w.sd <- sd(bal.1w)
 	
-	bal.ps <- apply(des.x, 2, table)
+	bal.ps <- apply(des.x, 2, function(x) table(factor(x, levels=1:items)))
 	bal.ps.mn <- mean(bal.ps)
 	bal.ps.sd <- sd(as.vector(bal.ps))
 	
@@ -94,6 +105,14 @@ tradeoff.des <- function(items, shown, vers, tasks, fname=NULL, Rd=20, Rc=NULL, 
 	tsk <- rep(1:tasks, vers)
 	design <- cbind(card, ver, tsk, des.x)
 	colnames(design) <- c("card", "version", "task", paste("item", 1:shown, sep=""))
+	
+	## Check for zeroes in bal.ps
+	zvec <- which(bal.ps == 0)
+	if(length(zvec) > 0) {
+		warning("SPARSE DESIGN: Not all items appear in all column positions", 
+			call.=FALSE, immediate.=TRUE
+		)
+	}
 	
 	## Return results
 	tb <- Sys.time() - ta

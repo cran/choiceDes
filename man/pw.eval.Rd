@@ -17,8 +17,8 @@ pw.eval(items, shown, drows, des)
 }
 
 \details{
-  This function evaluates the two-way (pairwise) frequencies of items in a tradeoff design matrix
-  And returns those frequencies as well as the off-diagonal mean and standard deviation of the
+  Evaluates the two-way (pairwise) frequencies of items in a tradeoff design matrix
+  and returns those frequencies as well as the off-diagonal mean and standard deviation of the
   frequencies.
   
   This function is called internally by \code{tradeoff.des}.

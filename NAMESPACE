@@ -1,2 +1,5 @@
 exportPattern("^[[:alpha:]]+")
 import(AlgDesign)
+importFrom("graphics", "plot")
+importFrom("stats", "model.matrix", "runif", "sd")
+importFrom("utils", "flush.console", "read.table", "write.table")

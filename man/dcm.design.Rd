@@ -23,14 +23,14 @@ dcm.design(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE)
 }
 
 \details{
-  This function generates balanced and blocked choice sets from one or more specified full factorial candidate 
+  Generates balanced and blocked choice sets from one or more specified full-factorial candidate 
   set(s) using a modified Federov (1972) algorithm. See \code{optFederov} in \emph{AlgDesign} (Wheeler, 2004) 
   for a more complete description of the algorithm. Starting points are chosen randomly (as opposed to by 
   nullification) and may be seeded using \code{set.seed}. The \code{D} criterion is used for optimization.
   
   See \code{optBlock} for a description of the blocking method used.
   
-  If \code{fname} is specified in the call a tab-delimited plain-text file is generated in the working 
+  If \code{fname} is not \code{NULL} a tab-delimited plain-text file is generated in the working 
   directory containing the levels-coded design.
   
   Large problems will complete faster by setting \code{Rd} to a smaller value. However, this may come at the

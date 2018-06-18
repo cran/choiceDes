@@ -16,11 +16,11 @@ write.tab(x, f)
 }
 
 \details{
-  This function writes a data frame to the file indicated by \code{f}, using \code{write.table}
+  Writes a data frame to the file indicated by \code{f}, using \code{write.table}
   and appending the following arguments: \code{row.names=FALSE}, \code{col.names=TRUE},
   \code{quote=FALSE}, and \code{sep="\t"}.
   
-  This function is called internally by \code{dcm.design}, \code{dcm.design.cand}, and
+  Called internally by \code{dcm.design}, \code{dcm.design.cand}, and
   \code{tradeoff.des}.
 } 
 

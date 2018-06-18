@@ -24,12 +24,15 @@ dcm.design.cand(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE)
 }
 
 \details{
-  This function generates balanced and blocked choice sets from a \emph{pre-generated} candidate set. 
-  Typical use will involve (1) generating a full factorial candidate set (see \code{dcm.design.gencand}), 
+  Generates balanced and blocked choice sets from a \emph{pre-generated} candidate set. 
+  Typical use will involve (1) generating a full factorial candidate set (see \code{gen.factorial}), 
   (2) manipulating levels as desired (e.g., adding restrictions) and,
   (3) using the manipulated set as input into the function.
   
-  Design optimization and blocking use the same algorithms as those in \code{dcm.design}.   
+  Design optimization and blocking use the same algorithms as those in \code{dcm.design}.
+
+  If \code{fname} is not \code{NULL} a tab-delimited plain-text file is generated in the working 
+  directory containing the levels-coded design.  
 } 
 
 \value{
@@ -52,7 +55,7 @@ dcm.design.cand(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE)
 
 \examples{
 ## generate full factorial candidate set
-cand <- dcm.design.gencand(c(3,3,4))
+cand <- gen.factorial(c(3,3,4), factors="all")
 
 ## restrict the candidate set so that level 3 in the first factor 
 ## cannot occur with level 1 in the second factor

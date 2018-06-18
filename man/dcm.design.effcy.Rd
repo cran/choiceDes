@@ -13,7 +13,7 @@ dcm.design.effcy(des)
 }
 
 \details{
-  This function calculates overall \code{D}-efficiency, the variance-covariance matrix,
+  Calculates overall \code{D}-efficiency, the variance-covariance matrix,
   and standard deviations for each parameter from an effects coded design.
   
   Called internally by \code{dcm.design} and \code{dcm.design.cand}.

@@ -21,7 +21,7 @@ tradeoff.des(items, shown, vers, tasks, fname=NULL, Rd=20, Rc=NULL, print=TRUE)
 }
 
 \details{
-  This function replicates the functionality of Sawtooth Software MaxDiff Designer for designing MaxDiff and
+  Replicates the functionality of Sawtooth Software MaxDiff Designer for designing MaxDiff and
   related tradeoff tasks.
   
   A modified Federov (1972) algorithm is applied to a factor equal in length to the number of items to optimize 
@@ -29,7 +29,7 @@ tradeoff.des(items, shown, vers, tasks, fname=NULL, Rd=20, Rc=NULL, print=TRUE)
   
   The optimized design is evaluated for one-way frequencies (equal representation of each item across all 
   versions and column positions). Designs are also optimized for two-way or pairwise balance across all tasks. 
-  Column position balance is the more computationally intensive process. The number of iterations required for
+  Column position balance is the more computationally-intensive process. The number of iterations required for
   this step is determined by the \code{Rc} argument which defaults to the larger of 1,000 or 10 \code{x} the 
   number of rows in the design. Large design problems may require a larger number of iterations to achieve 
   optimal column position balance.
@@ -37,6 +37,9 @@ tradeoff.des(items, shown, vers, tasks, fname=NULL, Rd=20, Rc=NULL, print=TRUE)
   Once an optimal design has been found, it is blocked into versions using \code{optBlock} to ensure equal
   representation of items \emph{within} each version. See Wheeler (2004) for a more complete description of the
   modified Federov and blocking algorithms used in optimizing these designs.
+  
+  If \code{fname} is not \code{NULL} a tab-delimited plain-text file is generated in the working 
+  directory containing the levels-coded design.
 } 
 
 \value{

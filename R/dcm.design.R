@@ -1,27 +1,14 @@
 
 ##Algorithms for producing DCM designs
-##For use in choiceDes_0.9-0
-##Written for [R]-language (tested/built on version 3.1.2)
+##For use in choiceDes_0.9-3
+##Written for [R]-language (tested/built on version 3.5.0)
 ##Requires: base, stat, AlgDesign
-##Revised 2014-11-24
+##Revised 2018-06-18
 
 write.tab <- function(x, f) {
 	try(
 		write.table(x, f, row.names=FALSE, col.names=TRUE, quote=FALSE, sep="\t")
 	)
-}
-
-get.file <- function(dat.in) {
-
-	if(is.data.frame(dat.in)) { dat.out <- dat.in } 
-	else { dat.out <- read.table(dat.in, header=TRUE, sep='\t') }
-		
-	return(dat.out)
-}
-
-dcm.design.gencand <- function(levs) {
-	cand <- gen.factorial(levs, factors="all")
-	return(cand)
 }
 
 dcm.design <- function(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE) {
@@ -31,7 +18,7 @@ dcm.design <- function(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE) {
 	options(contrasts=c("contr.sum","contr.poly"))
 	if(!is.list(cand)) { cand <- list(cand) }
 	if(print) {
-		cat("dcm.design 0.9-0, ", date(), "\n")
+		cat("dcm.design 0.9-2, ", date(), "\n")
 		flush.console()
 	}
 	
@@ -53,9 +40,10 @@ dcm.design <- function(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE) {
 		}
 		rownames(cand.lev) <- 1:nrow(cand.lev)
 		rownames(cand.eff) <- 1:nrow(cand.eff)
+		
 			
 		##GENERATE DESIGN
-		desa.eff <- optFederov(~., cand.eff, drows, nRepeats=Rd)
+		desa.eff <- optFederovC(cand.eff, drows, nRepeats=Rd)
 		desa.lev <- cand.lev[desa.eff$rows,]
 			
 		rownames(desa.eff$design) <- 1:drows
@@ -73,7 +61,7 @@ dcm.design <- function(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE) {
 		
 	##BLOCK THE FINAL DESIGN
 	colnames(desb.eff) <- 1:ncol(desb.eff)
-	desx.eff <- optBlock(~., desb.eff, rep(sets * alts, nb), nRepeats=Rd)
+	desx.eff <- optBlockC(desb.eff, rep(sets * alts, nb), nRepeats=Rd)
 	desx.lev <- desb.lev[desx.eff$rows,]
 	desf.lev <- dcm.design.sort(desx.lev, nb, sets, alts)
 	
@@ -101,11 +89,13 @@ dcm.design.cand <- function(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE)
 	ta = Sys.time()
 	options(contrasts=c("contr.sum","contr.poly"))
 	if(print) {
-		cat("dcm.design.cand 0.9-0, ", date(), "\n")
+		cat("dcm.design.cand 0.9-2, ", date(), "\n")
 		flush.console()
 	}
 	
-	cand.lev <- get.file(cand)
+	cand.lev <- cand
+	if(!is.data.frame(cand.lev)) { cand.lev <- read.table(cand.lev, header=TRUE, sep="\t") }
+	
 	drows = nb * sets * alts
 	for(i in 1:ncol(cand.lev)) {
 		cand.lev[,i] <- as.factor(cand.lev[,i])
@@ -127,8 +117,8 @@ dcm.design.cand <- function(cand, nb, sets, alts, fname=NULL, Rd=20, print=TRUE)
 	rownames(cand.eff) <- 1:nrow(cand.eff)
 	
 	##GENERATE AND BLOCK DESIGN
-	desa.eff <- optFederov(~., cand.eff, drows, nRepeats=Rd)
-	desx.eff <- optBlock(~., desa.eff$design, rep(sets * alts, nb), nRepeats=Rd)
+	desa.eff <- optFederovC(cand.eff, drows, nRepeats=Rd)
+	desx.eff <- optBlockC(desa.eff$design, rep(sets * alts, nb), nRepeats=Rd)
 	desx.lev <- cand.lev[desx.eff$rows,]
 	desf.lev <- dcm.design.sort(desx.lev, nb, sets, alts)
 	
